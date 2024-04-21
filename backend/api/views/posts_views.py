@@ -4,25 +4,25 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import News, NewsComments
+from ..models import Post, PostComments
 from ..response_handler import response_handler
-from ..serializers import NewsCommentsSerializer, NewsSerializer
+from ..serializers import PostCommentsSerializer, PostSerializer
 from ..utils.cript_utils import decrypt
 from ..utils.request_utils import check_not_none
 from ..utils.token_utils import AccessToken
 
 
-class NewsListAPIView(APIView):
+class PostListAPIView(APIView):
     @response_handler
     def get(self, request):
-        all_news = News.objects.all()
+        all_news = Post.objects.all()
         news_list = []
         for news in all_news:
-            comments = NewsComments.objects.filter(news=news)
+            comments = PostComments.objects.filter(news=news)
             comments_list = []
             for comment in comments:
                 comment_dict = {
-                    "commentId": comment.comment_id,
+                    "commentId": comment.id,
                     "author": decrypt(comment.author.nickname),
                     "authorImg": comment.author.profile_img,
                     "creation_date": comment.creation_date,
@@ -30,7 +30,7 @@ class NewsListAPIView(APIView):
                 }
                 comments_list.append(comment_dict)
             news_dict = {
-                "id": news.news_id,
+                "id": news.id,
                 "title": news.title,
                 "category": news.category,
                 "date": news.creation_date,
@@ -44,7 +44,7 @@ class NewsListAPIView(APIView):
         return Response(news_list)
 
 
-class NewsAddAPIViews(APIView):
+class PostAddAPIViews(APIView):
     parser_classes = [MultiPartParser]
 
     @response_handler
@@ -76,19 +76,19 @@ class NewsAddAPIViews(APIView):
             "creation_date": creation_date,
             "category": category,
         }
-        serializer = NewsSerializer(data=input_data)
+        serializer = PostSerializer(data=input_data)
 
         if serializer.is_valid():
             saved_news = serializer.save()
             # Return created news id
-            return Response(saved_news.news_id, status=201)
+            return Response(saved_news.id, status=201)
         else:
             print(serializer.errors)
             # Return generic error
             return Response("An error occurred", status=400)
 
 
-class NewsCommentsAPIView(APIView):
+class PostCommentsAPIView(APIView):
     @response_handler
     def post(self, request):
         news_id = request.data.get("id", "")
@@ -105,20 +105,20 @@ class NewsCommentsAPIView(APIView):
             return Response("Token is invalid", status=400)
 
         try:
-            news = News.objects.get(news_id=news_id)
-        except News.DoesNotExist:
+            news = Post.objects.get(news_id=news_id)
+        except Post.DoesNotExist:
             # Return generic error
             return Response("An error occurred", status=400)
 
         user = check_res
         creation_date = datetime.utcnow().date()
         input_data = {
-            "author": user.user_id,
+            "author": user.id,
             "creation_date": creation_date,
             "text": text,
         }
 
-        serializer = NewsCommentsSerializer(data=input_data)
+        serializer = PostCommentsSerializer(data=input_data)
         if serializer.is_valid():
             serializer.save()
             news.comments.add(serializer.instance)

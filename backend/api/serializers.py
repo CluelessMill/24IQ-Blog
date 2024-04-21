@@ -3,11 +3,11 @@ from shutil import copyfileobj
 
 from rest_framework import serializers
 
-from .models import News, NewsComments, Sessions, User
+from .models import Post, PostComments, Sessions, User
 from .utils.cript_utils import encrypt, hash_password
 
 
-class NewsSerializer(serializers.Serializer):
+class PostSerializer(serializers.Serializer):
     title = serializers.CharField()
     content_text = serializers.CharField()
     category = serializers.CharField()
@@ -19,7 +19,7 @@ class NewsSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         creation_date = validated_data.pop("creation_date", None)
-        news_instance = News.objects.create(
+        news_instance = Post.objects.create(
             **validated_data, creation_date=creation_date
         )
         folder_name = str(news_instance.news_id)
@@ -49,9 +49,9 @@ class NewsSerializer(serializers.Serializer):
         remove(path=uploaded_file.path)
 
 
-class NewsCommentsSerializer(serializers.ModelSerializer):
+class PostCommentsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NewsComments
+        model = PostComments
         fields = "__all__"
 
 

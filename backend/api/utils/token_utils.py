@@ -29,7 +29,7 @@ class Token:
                 days=settings.REFRESH_TOKEN_PERIOD
             )
             session_error = session_update(
-                creation_time=creation_time, user_id=user.user_id
+                creation_time=creation_time, user_id=user.id
             )
             if session_error is not None:
                 raise (session_error)
@@ -37,7 +37,7 @@ class Token:
             raise Exception("Invalid token_type")
         payload = {
             "token_type": self.__name__,
-            "user_id": user.user_id,
+            "user_id": user.id,
             "created": creation_time.isoformat(),
             "expired": expiration_time.isoformat(),
         }

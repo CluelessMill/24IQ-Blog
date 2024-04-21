@@ -1,29 +1,28 @@
-from ast import literal_eval
-
-from bcrypt import checkpw, gensalt, hashpw
+from bcrypt import gensalt, hashpw
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from django.conf import settings
 
 CYPHER_KEY = settings.CYPHER_KEY
 
 
-def encrypt(data) -> bytes:
-    digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
-    digest.update(data.encode())
-    hashed_message = digest.finalize()
+def encrypt(data: str) -> bytes:
     cipher = Cipher(algorithms.AES(CYPHER_KEY), modes.ECB(), backend=default_backend())
     encryptor = cipher.encryptor()
-    encrypted_message = encryptor.update(hashed_message) + encryptor.finalize()
-    return encrypted_message
+    padder = padding.PKCS7(128).padder()
+    padded_message = padder.update(data.encode()) + padder.finalize()
+    ciphertext = encryptor.update(padded_message) + encryptor.finalize()
+    return ciphertext
 
 
-def decrypt(data) -> bytes:
+def decrypt(data: bytes) -> str:
     cipher = Cipher(algorithms.AES(CYPHER_KEY), modes.ECB(), backend=default_backend())
     decryptor = cipher.decryptor()
     decrypted_message = decryptor.update(data) + decryptor.finalize()
-    return decrypted_message
+    unpadder = padding.PKCS7(128).unpadder()
+    unpadded_message = unpadder.update(decrypted_message) + unpadder.finalize()
+    return str(unpadded_message.decode())
 
 
 def hash_password(password) -> bytes:
@@ -32,6 +31,6 @@ def hash_password(password) -> bytes:
     return hashed_password
 
 
-def check_password(input_password, stored_password) -> bool:
-    stored_bytes = literal_eval(stored_password)
-    return bool(checkpw(input_password.encode("utf-8"), stored_bytes))
+def check_password(input_password: str, stored_password: bytes) -> bool:
+    new_hash = hashpw(input_password.encode(encoding="utf-8"), stored_password)
+    return new_hash == stored_password

@@ -9,19 +9,19 @@ def authenticate_user(nickname=None, user_id=None, password=None, email=None):
         user = None
         if nickname is not None and password is not None:
             user = User.objects.get(nickname=encrypt(nickname))
-            if not check_password(password, user.password):
+            if not check_password(input_password=password, stored_password=user.password.tobytes()):
                 user = None
         elif email is not None and password is not None:
             user = User.objects.get(email=encrypt(email))
-            if not check_password(password, user.password):
+            if not check_password(input_password=password, stored_password=user.password.tobytes()):
                 user = None
         elif nickname is None and email is None:
             user = User.objects.get(user_id=user_id)
 
         if not user:
             return None
-        user.nickname = decrypt(user.nickname)
-        user.email = decrypt(user.email)
+        user.nickname = decrypt(user.nickname.tobytes())
+        user.email = decrypt(user.email.tobytes())
         return user
     except User.DoesNotExist:
         return None

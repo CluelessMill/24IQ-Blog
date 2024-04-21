@@ -12,7 +12,7 @@ from ..utils.user_utils import authenticate_user, check_is_unique, generate_nick
 
 
 class SignInAPIView(APIView):
-    @response_handler
+    # @response_handler
     def post(self, request):
         password = request.data.get("password", "")
         nickname = request.data.get("nickname", "")
@@ -60,7 +60,7 @@ class SignUpAPIView(APIView):
         for user in users:
             response_data.append(
                 {
-                    "id": user.user_id,
+                    "id": user.id,
                     "email": decrypt(data=user.email.tobytes()),
                     "nickname": decrypt(data=user.nickname.tobytes()),
                     "password": user.password.tobytes(),
