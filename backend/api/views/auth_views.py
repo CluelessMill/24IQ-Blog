@@ -1,9 +1,8 @@
-from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import User
 from ..decorators.response import response_handler
+from ..models import User
 from ..serializers import UserSerializer
 from ..utils.cript_utils import decrypt
 from ..utils.request_utils import check_not_none
@@ -12,7 +11,7 @@ from ..utils.user_utils import authenticate_user, check_is_unique, generate_nick
 
 
 class SignInAPIView(APIView):
-    # @response_handler
+    @response_handler
     def post(self, request):
         password = request.data.get("password", "")
         nickname = request.data.get("nickname", "")
@@ -41,13 +40,14 @@ class SignInAPIView(APIView):
                     "isActive": True,
                 },
             }
-            response = JsonResponse(data=response_data, status=201)
+            response = Response(data=response_data, status=201)
             response.set_cookie(key="refreshToken", value=refresh_token.value)
-            return response  # Return access and refresh token
+            return response
         else:
-            # Return authentication error
             return Response(
-                f"Invalid {'nickname' if not email else 'email'} or password.",
+                {
+                    "message": f"Invalid {'nickname' if not email else 'email'} or password."
+                },
                 status=400,
             )
 
@@ -70,10 +70,10 @@ class SignUpAPIView(APIView):
                     "profile_img": user.profile_img,
                 }
             )
-        return Response(response_data)
+        return Response(data=response_data, status=200)
 
-    # @response_handler
-    def post(self, request):
+    @response_handler
+    def post(self, request) -> Response:
         password = request.data.get("password", "")
         email = request.data.get("email", "")
         check_not_none(password, email)
@@ -107,7 +107,7 @@ class SignUpAPIView(APIView):
                     "isActive": True,
                 },
             }
-            response = JsonResponse(data=response_data, status=201)
+            response = Response(data=response_data, status=201)
             response.set_cookie(key="refreshToken", value=refresh_token.value)
             return response
         else:
@@ -116,7 +116,7 @@ class SignUpAPIView(APIView):
 
 class UpdateTokenAPIView(APIView):
     @response_handler
-    def post(self, request):
+    def post(self, request) -> Response:
         access_token_req = request.data.get("accessToken", "")
         refresh_token_req = request.COOKIES.get("token")
         check_not_none(access_token_req, refresh_token_req)

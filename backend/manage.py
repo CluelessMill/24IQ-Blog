@@ -1,9 +1,11 @@
-import os
-import sys
+from os import environ
+from sys import argv
+
+
 
 
 def main():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+    environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -15,5 +17,6 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+if __name__ == "__main__":
 if __name__ == "__main__":
     main()

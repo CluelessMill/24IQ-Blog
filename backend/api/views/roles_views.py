@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import User
 from ..decorators.response import response_handler
+from ..models import User
 from ..utils.cript_utils import decrypt, encrypt
 from ..utils.request_utils import check_not_none
 from ..utils.roles_utils import admin_check
@@ -11,7 +11,7 @@ from ..utils.token_utils import AccessToken
 
 class RoleListAPIView(APIView):
     @response_handler
-    def get(self, request):
+    def get(self, request) -> Response:
         users = User.objects.all()
         response_data = []
         for user in users:
@@ -22,10 +22,10 @@ class RoleListAPIView(APIView):
                     "role": user.role,
                 }
             )
-        return Response(response_data)  # Return all users information
+        return Response(data=response_data)
 
     @response_handler
-    def put(self, request):
+    def put(self, request) -> Response:
         nickname = request.data.get("nickname", "")
         token_req = request.data.get("token", "")
         new_role = request.data.get("role", "")
@@ -40,17 +40,17 @@ class RoleListAPIView(APIView):
                 user.role = new_role
                 user.save()
             except User.DoesNotExist:
-                return Response("User not found", status=404)
-            return Response("Success")
+                return Response(data={"message": "User not found"}, status=404)
+            return Response(data={"message": "Success"}, status=200)
         else:
-            return Response("You don't have permission.", status=400)
+            return Response(data={"message": "You don't have permission"}, status=400)
 
 
 class IsAdminAPIView(APIView):
     @response_handler
-    def post(self, request):
+    def post(self, request) -> Response:
         token_req = request.data.get("token", "")
         check_not_none(token_req)
         token = AccessToken(token_value=token_req)
         response = {"isAdmin": admin_check(token)}
-        return Response(response)
+        return Response(data=response)

@@ -23,5 +23,5 @@ class ProfileAPIView(APIView):
             return Response(response_data, status=201)  # Return profile info
         else:
             return Response(
-                check_res_to_error(check_res), status=401
+                check_res_to_error(result_code=check_res), status=401
             )  # Return token error
