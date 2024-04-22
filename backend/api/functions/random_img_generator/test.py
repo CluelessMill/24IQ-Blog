@@ -1,5 +1,4 @@
 from math import ceil, sqrt
-# from api.decorators.functions import test_function
 from PIL import Image, ImageDraw
 
 import ultraimport
