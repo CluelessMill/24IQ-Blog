@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ..models import User
-from ..response_handler import response_handler
+from ..decorators.response import response_handler
 from ..utils.cript_utils import decrypt, encrypt
 from ..utils.request_utils import check_not_none
 from ..utils.roles_utils import admin_check

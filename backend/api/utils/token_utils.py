@@ -28,9 +28,7 @@ class Token:
             expiration_time = creation_time + timedelta(
                 days=settings.REFRESH_TOKEN_PERIOD
             )
-            session_error = session_update(
-                creation_time=creation_time, user_id=user.id
-            )
+            session_error = session_update(creation_time=creation_time, user_id=user.id)
             if session_error is not None:
                 raise (session_error)
         else:
@@ -53,7 +51,7 @@ class Token:
         if expiration_time is not None and datetime.utcnow() > expiration_time:
             return -3  # Token expired
 
-        if self.__name__ != real_type:  # Type check
+        if self.__name__ != real_type:
             return -1  # Token invalid
 
         user_id = decoded_content.get("user_id", None)

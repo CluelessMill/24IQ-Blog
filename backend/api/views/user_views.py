@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..response_handler import response_handler
+from ..decorators.response import response_handler
 from ..utils.request_utils import check_not_none
 from ..utils.token_utils import AccessToken, check_res_to_error
 

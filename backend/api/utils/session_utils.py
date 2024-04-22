@@ -2,7 +2,7 @@ from ..models import Sessions
 from ..serializers import SessionsSerializer
 
 
-def session_update(creation_time, user_id: int):
+def session_update(creation_time, user_id: int) -> None | str:
     existing_session = Sessions.objects.filter(user=user_id).first()
 
     if existing_session:

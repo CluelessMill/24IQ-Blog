@@ -25,7 +25,7 @@ def decrypt(data: bytes) -> str:
     return str(unpadded_message.decode())
 
 
-def hash_password(password) -> bytes:
+def hash_password(password : str) -> bytes:
     salt = gensalt()
     hashed_password = hashpw(password.encode("utf-8"), salt)
     return hashed_password

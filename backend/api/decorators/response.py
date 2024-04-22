@@ -1,8 +1,7 @@
 from rest_framework.response import Response
 
 
-def response_handler(function):
-
+def response_error_handler(function):
     def wrapper(*args, **kwargs):
         try:
             res = function(*args, **kwargs)
