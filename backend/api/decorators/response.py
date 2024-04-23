@@ -8,6 +8,6 @@ def response_handler(function):
             return res
         except Exception as e:
             print(e)
-            return Response({"message":"An error occurred"}, status=500)
+            return Response({"message": "An error occurred"}, status=500)
 
     return wrapper
