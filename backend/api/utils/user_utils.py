@@ -22,7 +22,7 @@ def authenticate_user(
             ):
                 user = None
         elif nickname is None and email is None:
-            user = User.objects.get(user_id=user_id)
+            user = User.objects.get(id=user_id)
 
         if not user:
             return None

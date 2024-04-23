@@ -12,7 +12,7 @@ from ..utils.user_utils import authenticate_user, check_is_unique, generate_nick
 
 class SignInAPIView(APIView):
     @response_handler
-    def post(self, request):
+    def post(self, request) -> Response:
         password = request.data.get("password", "")
         nickname = request.data.get("nickname", "")
         email = request.data.get("email", "")
@@ -54,7 +54,7 @@ class SignInAPIView(APIView):
 
 class SignUpAPIView(APIView):
     @response_handler
-    def get(self, request):
+    def get(self, request) -> Response:
         users = User.objects.all()
         response_data = []
         for user in users:
@@ -111,20 +111,21 @@ class SignUpAPIView(APIView):
             response.set_cookie(key="refreshToken", value=refresh_token.value)
             return response
         else:
-            return Response("An error occurred", status=400)
+            return Response("An error occurred", status=500)
 
 
 class UpdateTokenAPIView(APIView):
     @response_handler
     def post(self, request) -> Response:
-        access_token_req = request.data.get("accessToken", "")
-        refresh_token_req = request.COOKIES.get("token")
-        check_not_none(access_token_req, refresh_token_req)
+        refresh_token_req = request.COOKIES.get("refreshToken")
+        check_not_none(refresh_token_req)
 
-        access_token = AccessToken(token_value=access_token_req)
+        access_token = AccessToken
         refresh_token = RefreshToken(token_value=refresh_token_req)
         error = access_token.refresh(refresh_token)
         if error:
-            return Response(check_res_to_error(error), status=400)
+            return Response(
+                {"message": check_res_to_error(result_code=error)}, status=400
+            )
         else:
             return Response({"accessToken": access_token.value}, status=201)

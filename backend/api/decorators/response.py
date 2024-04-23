@@ -1,3 +1,4 @@
+from icecream import ic
 from rest_framework.response import Response
 
 
@@ -7,7 +8,7 @@ def response_handler(function):
             res = function(*args, **kwargs)
             return res
         except Exception as e:
-            print(e)
-            return Response({"message": "An error occurred"}, status=500)
+            ic(e, function)
+            return Response({"message": "An error occured"}, status=500)
 
     return wrapper
