@@ -8,7 +8,7 @@ from ..utils.token_utils import AccessToken, check_res_to_error
 
 class ProfileAPIView(APIView):
     @response_handler
-    def get(self, request):
+    def get(self, request) -> Response:
         token_req = request.data.get("accessToken", "")
         check_not_none(token_req)
         token = AccessToken(token_value=token_req)

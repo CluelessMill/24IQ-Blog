@@ -14,7 +14,7 @@ from ..utils.token_utils import AccessToken
 
 class PostListAPIView(APIView):
     @response_handler
-    def get(self, request):
+    def get(self, request) -> Response:
         all_news = Post.objects.all()
         news_list = []
         for news in all_news:
@@ -48,7 +48,7 @@ class PostAddAPIViews(APIView):
     parser_classes = [MultiPartParser]
 
     @response_handler
-    def post(self, request):
+    def post(self, request) -> Response:
         title = request.data.get("title", "")
         text = request.data.get("text", "")
         logo_img = request.data.get("logoImg", "")
@@ -90,7 +90,7 @@ class PostAddAPIViews(APIView):
 
 class PostCommentsAPIView(APIView):
     @response_handler
-    def post(self, request):
+    def post(self, request) -> Response:
         news_id = request.data.get("id", "")
         text = request.data.get("text", "")
         token_req = request.data.get("token", "")
