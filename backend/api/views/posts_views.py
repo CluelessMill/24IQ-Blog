@@ -57,7 +57,7 @@ class PostAddAPIViews(APIView):
         category = request.data.get("category", "")
         creation_date = datetime.utcnow()
         check_not_none(
-            title, text, logo_img, main_img, token_req, category, creation_date
+            (title, "title"), (text, "text"), (logo_img, "logoImg"), (main_img, "mainImg"), (token_req, "token"), (category, "category"), (creation_date, "creationDate")
         )
 
         token = AccessToken(token_value=token_req)
@@ -94,7 +94,7 @@ class PostCommentsAPIView(APIView):
         news_id = request.data.get("id", "")
         text = request.data.get("text", "")
         token_req = request.data.get("token", "")
-        check_not_none(news_id, text, token_req)
+        check_not_none((news_id, "id"), (text, "token"), (token_req, "token"))
 
         token = AccessToken(token_value=token_req)
         try:

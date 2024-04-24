@@ -10,7 +10,7 @@ class ProfileAPIView(APIView):
     @response_handler
     def get(self, request) -> Response:
         token_req = request.data.get("accessToken", "")
-        check_not_none(token_req)
+        check_not_none((token_req, "token"))
         token = AccessToken(token_value=token_req)
         check_res = token.check()
         if check_res.__class__ != int:
