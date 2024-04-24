@@ -12,7 +12,7 @@ def test_function(function):
         res = function(*args, **kwargs)
 
         pr.disable()
-        stats = Stats(pr)
+        stats = Stats(arg=pr)
         stats.sort_stats(SortKey.TIME)
         stats.dump_stats(filename=f"./api/tests_statistic/{function.__name__}.prof")
         return res

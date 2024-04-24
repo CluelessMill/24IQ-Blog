@@ -119,7 +119,6 @@ class UpdateTokenAPIView(APIView):
     def post(self, request) -> Response:
         refresh_token_req = request.COOKIES.get("refreshToken")
         check_not_none((refresh_token_req, "refreshToken"))
-
         access_token = AccessToken
         refresh_token = RefreshToken(token_value=refresh_token_req)
         error = access_token.refresh(refresh_token)
