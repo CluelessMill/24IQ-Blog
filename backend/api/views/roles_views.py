@@ -29,7 +29,7 @@ class RoleListAPIView(APIView):
         nickname = request.data.get("nickname", "")
         token_req = request.data.get("token", "")
         new_role = request.data.get("role", "")
-        check_not_none(nickname, token_req, new_role)
+        check_not_none((nickname, "nickname"), (token_req, "token"), (new_role, "role"))
 
         token = AccessToken(token_value=token_req)
         # ! TOKEN CHECK FUNC
@@ -50,7 +50,7 @@ class IsAdminAPIView(APIView):
     @response_handler
     def post(self, request) -> Response:
         token_req = request.data.get("token", "")
-        check_not_none(token_req)
+        check_not_none((token_req, "token"))
         token = AccessToken(token_value=token_req)
         response = {"isAdmin": admin_check(token)}
         return Response(data=response)

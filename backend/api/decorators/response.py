@@ -7,8 +7,9 @@ def response_handler(function):
         try:
             res = function(*args, **kwargs)
             return res
+        except ValueError as e:
+            return Response({"message": str(e)}, status=400)
         except Exception as e:
-            ic(e, function)
             return Response({"message": "An error occured"}, status=500)
 
     return wrapper

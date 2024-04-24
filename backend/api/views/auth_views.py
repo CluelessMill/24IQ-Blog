@@ -19,10 +19,10 @@ class SignInAPIView(APIView):
 
         if not nickname:
             nickname = None
-            check_not_none(password, email)
+            check_not_none((password, "password"), (email, "email"))
         if not email:
             email = None
-            check_not_none(password, nickname)
+            check_not_none((password, "password"), (nickname, "nickname"))
 
         user = authenticate_user(nickname=nickname, password=password, email=email)
         if user:
@@ -76,7 +76,7 @@ class SignUpAPIView(APIView):
     def post(self, request) -> Response:
         password = request.data.get("password", "")
         email = request.data.get("email", "")
-        check_not_none(password, email)
+        check_not_none((password, "password"), (email, "email"))
 
         if not email:
             return Response("Not enough data", status=400)  # Return error
@@ -118,8 +118,7 @@ class UpdateTokenAPIView(APIView):
     @response_handler
     def post(self, request) -> Response:
         refresh_token_req = request.COOKIES.get("refreshToken")
-        check_not_none(refresh_token_req)
-
+        check_not_none((refresh_token_req, "refreshToken"))
         access_token = AccessToken
         refresh_token = RefreshToken(token_value=refresh_token_req)
         error = access_token.refresh(refresh_token)
