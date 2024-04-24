@@ -57,7 +57,13 @@ class PostAddAPIViews(APIView):
         category = request.data.get("category", "")
         creation_date = datetime.utcnow()
         check_not_none(
-            (title, "title"), (text, "text"), (logo_img, "logoImg"), (main_img, "mainImg"), (token_req, "token"), (category, "category"), (creation_date, "creationDate")
+            (title, "title"),
+            (text, "text"),
+            (logo_img, "logoImg"),
+            (main_img, "mainImg"),
+            (token_req, "token"),
+            (category, "category"),
+            (creation_date, "creationDate"),
         )
 
         token = AccessToken(token_value=token_req)

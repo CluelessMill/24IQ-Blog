@@ -7,4 +7,6 @@ def check_not_none(*args):
             empty_vars.append(arg_name)
     if empty_vars:
         empty_vars_str = ", ".join(empty_vars)
-        raise ValueError(f"The following variables cannot be None or empty: {empty_vars_str}")
+        raise ValueError(
+            f"The following variables cannot be None or empty: {empty_vars_str}"
+        )
