@@ -1,8 +1,9 @@
 from math import ceil, sqrt
-from PIL import Image, ImageDraw
 
 import ultraimport
-test_function = ultraimport('api/decorators/functions.py', 'test_function')
+from PIL import Image, ImageDraw
+
+test_function = ultraimport("api/decorators/functions.py", "test_function")
 
 palette = [
     "#00272b",
@@ -15,6 +16,7 @@ palette = [
     "#bfd200",
     "#d4d700",
 ]
+
 
 def hex_to_rgb(hex_color):
     hex_color = hex_color.lstrip("#")

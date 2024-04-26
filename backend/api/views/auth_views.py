@@ -31,7 +31,6 @@ class SignInAPIView(APIView):
             access_token.create(user=user)
             refresh_token.create(user=user)
             response_data = {
-                "accessToken": access_token.value,
                 "user": {
                     "email": user.email,
                     "nickname": user.nickname,
@@ -42,6 +41,7 @@ class SignInAPIView(APIView):
             }
             response = Response(data=response_data, status=201)
             response.set_cookie(key="refreshToken", value=refresh_token.value)
+            response.set_cookie(key="accessToken", value=access_token.value)
             return response
         else:
             return Response(
@@ -117,6 +117,7 @@ class SignUpAPIView(APIView):
 class UpdateTokenAPIView(APIView):
     @response_handler
     def post(self, request) -> Response:
+        from icecream import ic
         refresh_token_req = request.COOKIES.get("refreshToken")
         check_not_none((refresh_token_req, "refreshToken"))
         access_token = AccessToken
