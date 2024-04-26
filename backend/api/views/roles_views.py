@@ -33,7 +33,7 @@ class RoleListAPIView(APIView):
 
         token = AccessToken(token_value=token_req)
         # ! TOKEN CHECK FUNC
-        is_admin = admin_check(token)
+        is_admin = admin_check(token=token)
         if is_admin:
             try:
                 user = User.objects.get(nickname=encrypt(nickname))
