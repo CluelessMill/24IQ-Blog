@@ -36,7 +36,7 @@ class RoleListAPIView(APIView):
         is_admin = admin_check(token=token)
         if is_admin:
             try:
-                user = User.objects.get(nickname=encrypt(nickname))
+                user = User.objects.get(nickname=encrypt(data=nickname))
                 user.role = new_role
                 user.save()
             except User.DoesNotExist:
@@ -52,5 +52,5 @@ class IsAdminAPIView(APIView):
         token_req = request.data.get("token", "")
         check_not_none((token_req, "token"))
         token = AccessToken(token_value=token_req)
-        response = {"isAdmin": admin_check(token)}
+        response = {"isAdmin": admin_check(token=token)}
         return Response(data=response)

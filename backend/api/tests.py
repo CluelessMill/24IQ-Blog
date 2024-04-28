@@ -46,3 +46,16 @@ class AuthAPITest(TestCase):
         test_sign_up(self=self)
         test_sign_in(self=self)
         test_refresh_token(self=self)
+
+    @test_function
+    def test_roles(self) -> None:
+        def test_get_roles(self) -> None:
+            print("Get_roles test")
+            response = self.receive_tokens()
+            cookie_value = response.cookies["refreshToken"].value
+            url = reverse(viewname="get-roles")
+            response = self.client.get(path=url, data=None, format="json")
+            response.set_cookie("responseToken", cookie_value)
+            self.assertEqual(first=response.status_code, second=200)
+
+        test_get_roles(self=self)
