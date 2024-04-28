@@ -42,7 +42,7 @@ def encode_string_to_image(text: str, image_size: int) -> Image.Image:
 
 
 @test_function
-def main():
+def generate_image():
     text_to_encode = "Bdacu Rwwdahuhud"
     image_size = 400
     encoded_image = encode_string_to_image(text=text_to_encode, image_size=image_size)
@@ -50,4 +50,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    generate_image()

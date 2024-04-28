@@ -82,7 +82,7 @@ class Token:
             raise Exception("Invalid token_type given")
         return expiration_time
 
-    def _validate_refresh_token(user: User, creation_date_str: str) -> None:
+    def _validate_refresh_token(user: User, creation_date_str: str) -> User | Exception:
         try:
             session = Sessions.objects.get(user=user.id)
             session_created = session.created_at
@@ -101,7 +101,8 @@ class Token:
             if session_created == creation_date:
                 return user  # Token valid
             else:
-                return -2  # Token annulled
+                # return -2  # Token annulled
+                return Exception()
         except Sessions.DoesNotExist:
             creation_date = datetime.strptime(creation_date_str, "%Y-%m-%dT%H:%M:%S.%f")
             data = {"user": user, "created_at": creation_date}
