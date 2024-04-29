@@ -54,7 +54,7 @@ class SignInAPIView(APIView):
 
 class SignUpAPIView(APIView):
     @response_handler
-    def get(self, request) -> Response:
+    def get(self, request) -> Response:  #! This must be deleted in production
         users = User.objects.all()
         response_data = []
         for user in users:
@@ -79,11 +79,13 @@ class SignUpAPIView(APIView):
         check_not_none((password, "password"), (email, "email"))
 
         if not email:
-            return Response("Not enough data", status=400)  # Return error
+            return Response("Not enough data", status=400)
         if not check_is_unique(email=email):
             return Response("Email already exists", status=400)
 
-        nickname = generate_nickname(email)
+        nickname = generate_nickname(email=email)
+
+        # TODO add profile image generation function
 
         input_data = {
             "nickname": nickname,
@@ -118,6 +120,7 @@ class UpdateTokenAPIView(APIView):
     @response_handler
     def post(self, request) -> Response:
         from icecream import ic
+
         refresh_token_req = request.COOKIES.get("refreshToken")
         check_not_none((refresh_token_req, "refreshToken"))
         access_token = AccessToken
@@ -128,4 +131,14 @@ class UpdateTokenAPIView(APIView):
                 {"message": check_res_to_error(result_code=error)}, status=400
             )
         else:
+            # TODO send cookie token
             return Response({"accessToken": access_token.value}, status=201)
+
+
+class LogOutAPIView(APIView):
+    @response_handler
+    def put(self, request):
+
+        # TODO Implementation
+
+        pass

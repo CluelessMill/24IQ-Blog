@@ -86,11 +86,9 @@ class PostAddAPIViews(APIView):
 
         if serializer.is_valid():
             saved_news = serializer.save()
-            # Return created news id
             return Response(saved_news.id, status=201)
         else:
             print(serializer.errors)
-            # Return generic error
             return Response("An error occurred", status=400)
 
 
@@ -113,7 +111,6 @@ class PostCommentsAPIView(APIView):
         try:
             news = Post.objects.get(news_id=news_id)
         except Post.DoesNotExist:
-            # Return generic error
             return Response("An error occurred", status=400)
 
         user = check_res
@@ -131,5 +128,4 @@ class PostCommentsAPIView(APIView):
             return Response(serializer.data, status=201)
         else:
             print(serializer.errors)
-            # Return generic error
             return Response("An error occurred", status=400)

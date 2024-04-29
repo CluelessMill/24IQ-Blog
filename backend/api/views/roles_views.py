@@ -12,6 +12,7 @@ from ..utils.token_utils import AccessToken
 class RoleListAPIView(APIView):
     @response_handler
     def get(self, request) -> Response:
+        #TODO add admin check based on received token
         users = User.objects.all()
         response_data = []
         for user in users:
@@ -32,7 +33,7 @@ class RoleListAPIView(APIView):
         check_not_none((nickname, "nickname"), (token_req, "token"), (new_role, "role"))
 
         token = AccessToken(token_value=token_req)
-        # ! TOKEN CHECK FUNC
+        #TODO implement token check response
         is_admin = admin_check(token=token)
         if is_admin:
             try:

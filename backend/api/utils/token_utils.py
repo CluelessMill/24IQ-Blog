@@ -44,11 +44,11 @@ class Token:
             real_type = decoded_content.get("token_type", None)
 
             if expiration_time is not None and current_time > expiration_time:
-                return -3  # Token expired
+                return -3  # ? Token expired
 
             real_type = decoded_content.get("token_type")
             if self.__name__ != real_type:
-                return -1  # Token invalid
+                return -1  # ? Token invalid
 
             user_id = decoded_content.get("user_id")
             creation_date_str = decoded_content.get("created")
@@ -61,10 +61,10 @@ class Token:
                 elif self.__name__ == "AccessToken":
                     return user  # Token valid
 
-            return -1  # Token invalid
+            return -1  # ? Token invalid
         except Exception as e:
             ic(e)
-            return -1  # Token invalid
+            return -1  # ? Token invalid
 
     def _set_expiration_time(
         token_type: str, creation_time: datetime, user_id: int
@@ -90,6 +90,7 @@ class Token:
                 tzinfo=timezone.utc
             )
 
+            # ? This might be usefull for time normalization
             # session_created = session_created.replace(microsecond=0)
             # creation_date = creation_date.replace(microsecond=0)
             # if session_created.tzinfo != creation_date.tzinfo:
@@ -109,9 +110,9 @@ class Token:
             serializer = SessionsSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
-                return user  # Token valid
+                return user
             else:
-                return -1  # Token invalid
+                return -1
 
     def _type_check() -> bool:
         return ...

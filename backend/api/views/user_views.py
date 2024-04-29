@@ -20,9 +20,9 @@ class ProfileAPIView(APIView):
                 "profileImg": user.profile_img,
                 "info": user.info,
             }
-            return Response(response_data, status=201)  # Return profile info
+            return Response(response_data, status=201)
         else:
             return Response(
                 check_res_to_error(result_code=check_res), status=401
-            )  # Return token error
+            )
 
