@@ -4,7 +4,7 @@ from django.urls import path
 
 from .views.auth_views import SignInAPIView, SignUpAPIView, UpdateTokenAPIView
 from .views.posts_views import PostAddAPIViews, PostCommentsAPIView, PostListAPIView
-from .views.roles_views import IsAdminAPIView, RoleListAPIView
+from .views.roles_views import IsAdminAPIView, RoleListAPIView, RoleSetAPIView
 from .views.user_views import ProfileAPIView
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path("posts/comments", PostCommentsAPIView.as_view(), name="posts-comments"),
     path("role/is-admin", IsAdminAPIView.as_view(), name="is-admin"),
     path("role/list", RoleListAPIView.as_view(), name="role-list"),
+    path("role/set", RoleSetAPIView.as_view(), name="role-set"),
     path("auth/signup", SignUpAPIView.as_view(), name="sign-up"),
     path("auth/signin", SignInAPIView.as_view(), name="sign-in"),
     path("auth/refresh", UpdateTokenAPIView.as_view(), name="refresh-token"),

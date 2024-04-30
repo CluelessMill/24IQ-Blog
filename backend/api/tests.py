@@ -10,14 +10,13 @@ class AuthAPITest(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
 
-    def receive_tokens(self) -> str:
+    def receive_tokens(self, mode:str):
         data = {"email": "admin", "password": "admin"}
-        url = reverse(viewname="sign-in")
+        url = reverse(viewname=mode)
         response = self.client.post(path=url, data=data, format="json")
         self.assertEqual(first=response.status_code, second=201)
         return response
 
-    @test_function
     def test_auth(self) -> None:
         data = {"email": "admin", "password": "admin"}
 
@@ -36,26 +35,25 @@ class AuthAPITest(TestCase):
 
         def test_refresh_token(self) -> None:
             print("Refresh_token test")
-            response = self.receive_tokens()
+            response = self.receive_tokens(mode="sign-in")
             cookie_value = response.cookies["refreshToken"].value
             url = reverse(viewname="refresh-token")
-            response = self.client.post(path=url, data=None, format="json")
-            response.set_cookie("responseToken", cookie_value)
+            response = self.client.put(path=url, data=None, format="json")
+            response.set_cookie("refreshToken", cookie_value)
             self.assertEqual(first=response.status_code, second=201)
 
         test_sign_up(self=self)
         test_sign_in(self=self)
         test_refresh_token(self=self)
 
-    @test_function
     def test_roles(self) -> None:
         def test_get_roles(self) -> None:
             print("Get_roles test")
-            response = self.receive_tokens()
-            cookie_value = response.cookies["refreshToken"].value
-            url = reverse(viewname="get-roles")
+            token_request = self.receive_tokens(mode="sign-up")
+            cookie_value = token_request.cookies["refreshToken"].value
+            url = reverse(viewname="role-list")
             response = self.client.get(path=url, data=None, format="json")
-            response.set_cookie("responseToken", cookie_value)
+            response.set_cookie("refreshToken", cookie_value)
             self.assertEqual(first=response.status_code, second=200)
 
         test_get_roles(self=self)

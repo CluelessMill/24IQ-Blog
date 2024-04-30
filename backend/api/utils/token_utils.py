@@ -34,6 +34,15 @@ class Token:
 
     @classmethod
     def check(self: Self) -> User | int:
+        """
+        Check if token is valid
+
+        Args:
+            self (Self): Refresh/Access token object
+
+        Returns:
+            User | int: User if token is valid, error code otherwise
+        """
         try:
             decoded_content = decode(self.value, KEY, algorithms=["HS256"])
             expiration_time_str = decoded_content.get("expired", None)
@@ -59,7 +68,7 @@ class Token:
                         user=user, creation_date_str=creation_date_str
                     )
                 elif self.__name__ == "AccessToken":
-                    return user  # Token valid
+                    return user  # ? Token valid
 
             return -1  # ? Token invalid
         except Exception as e:
@@ -141,7 +150,7 @@ class AccessToken(Token):
             return -1
 
 
-def check_res_to_error(result_code: int) -> str:
+def to_message(result_code: int) -> str:
     error_message = ""
     match result_code:
         case -3:

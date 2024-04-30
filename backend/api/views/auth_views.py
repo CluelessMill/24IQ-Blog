@@ -6,7 +6,7 @@ from ..models import User
 from ..serializers import UserSerializer
 from ..utils.cript_utils import decrypt
 from ..utils.request_utils import check_not_none
-from ..utils.token_utils import AccessToken, RefreshToken, check_res_to_error
+from ..utils.token_utils import AccessToken, RefreshToken, to_message
 from ..utils.user_utils import authenticate_user, check_is_unique, generate_nickname
 
 
@@ -118,9 +118,7 @@ class SignUpAPIView(APIView):
 
 class UpdateTokenAPIView(APIView):
     @response_handler
-    def post(self, request) -> Response:
-        from icecream import ic
-
+    def put(self, request) -> Response:
         refresh_token_req = request.COOKIES.get("refreshToken")
         check_not_none((refresh_token_req, "refreshToken"))
         access_token = AccessToken
@@ -128,7 +126,7 @@ class UpdateTokenAPIView(APIView):
         error = access_token.refresh(refresh_token)
         if error:
             return Response(
-                {"message": check_res_to_error(result_code=error)}, status=400
+                {"message": to_message(result_code=error)}, status=400
             )
         else:
             # TODO send cookie token
