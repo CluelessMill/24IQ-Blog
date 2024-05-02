@@ -1,3 +1,4 @@
+from cgi import test
 from django.test import TestCase
 from django.urls import reverse
 from icecream import ic
@@ -30,12 +31,14 @@ class AuthAPITest(TestCase):
             print("Sign_up test")
             url = reverse(viewname="sign-up")
             response = self.client.post(path=url, data=data, format="json")
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=201)
 
         def test_sign_in(self) -> None:
             print("Sign_in test")
             url = reverse(viewname="sign-in")
             response = self.client.post(path=url, data=data, format="json")
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=201)
 
         def test_refresh_token(self) -> None:
@@ -45,6 +48,7 @@ class AuthAPITest(TestCase):
             url = reverse(viewname="refresh-token")
             response = self.client.put(path=url, data=None, format="json")
             response.set_cookie("refreshToken", cookie_value)
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=201)
 
         test_sign_up(self=self)
@@ -53,6 +57,7 @@ class AuthAPITest(TestCase):
 
     def test_roles(self) -> None:
         nickname, cookie_value = None, None
+
         def init_profile(self, mode):
             token_request = self._receive_tokens(mode=mode)
             nickname = token_request.data["user"]["nickname"]
@@ -67,6 +72,7 @@ class AuthAPITest(TestCase):
             print("No permission")
             response = self.client.put(path=url, data=data, format="json")
             response.set_cookie("accessToken", cookie_value)
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=400)
 
             print("With permission")
@@ -75,6 +81,7 @@ class AuthAPITest(TestCase):
             data = {"role": "user", "nickname": nickname}
             response = self.client.put(path=url, data=data, format="json")
             response.set_cookie("accessToken", cookie_value)
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=201)
 
         def test_role_list(self, nickname, cookie_value) -> None:
@@ -84,15 +91,37 @@ class AuthAPITest(TestCase):
             print("No permission")
             response = self.client.get(path=url, data=None, format="json")
             response.set_cookie("accessToken", cookie_value)
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=400)
 
             print("With permission")
             self._set_role_DEBUG(new_role="admin", nickname=nickname)
             response = self.client.get(path=url, data=None, format="json")
+            ic(response.data)
             self.assertEqual(first=response.status_code, second=200)
 
+        def test_is_admin(self, nickname, cookie_value) -> None:
+            print("Is admin test")
+            url = reverse(viewname="is-admin")
+
+            print("Admin")
+            nickname, cookie_value = init_profile(self=self, mode="sign-in")
+            response = self.client.get(path=url, data=None, format="json")
+            response.set_cookie("accessToken", cookie_value)
+            ic(response.data)
+            self.assertEqual(first=response.status_code, second=200)
+            self.assertEqual(first=response.data["isAdmin"], second=True)
+
+            print("User")
+            self._set_role_DEBUG(new_role="user", nickname=nickname)
+            nickname, cookie_value = init_profile(self=self, mode="sign-in")
+            response = self.client.get(path=url, data=None, format="json")
+            response.set_cookie("accessToken", cookie_value)
+            ic(response.data)
+            self.assertEqual(first=response.status_code, second=200)
+            self.assertEqual(first=response.data["isAdmin"], second=False)
 
         nickname, cookie_value = init_profile(self=self, mode="sign-up")
         test_role_set(self=self, nickname=nickname, cookie_value=cookie_value)
         test_role_list(self=self, nickname=nickname, cookie_value=cookie_value)
-
+        test_is_admin(self=self, nickname=nickname, cookie_value=cookie_value)
