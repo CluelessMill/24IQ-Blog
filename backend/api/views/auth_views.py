@@ -54,25 +54,6 @@ class SignInAPIView(APIView):
 
 class SignUpAPIView(APIView):
     @response_handler
-    def get(self, request) -> Response:  #! This must be deleted in production
-        users = User.objects.all()
-        response_data = []
-        for user in users:
-            response_data.append(
-                {
-                    "id": user.id,
-                    "email": decrypt(data=user.email.tobytes()),
-                    "nickname": decrypt(data=user.nickname.tobytes()),
-                    "password": user.password.tobytes(),
-                    "info": user.info,
-                    "role": user.role,
-                    "active": user.active,
-                    "profile_img": user.profile_img,
-                }
-            )
-        return Response(data=response_data, status=200)
-
-    @response_handler
     def post(self, request) -> Response:
         password = request.data.get("password", "")
         email = request.data.get("email", "")
@@ -100,7 +81,6 @@ class SignUpAPIView(APIView):
             access_token.create(user=user)
             refresh_token.create(user=user)
             response_data = {
-                "accessToken": access_token.value,
                 "user": {
                     "email": email,
                     "nickname": nickname,
@@ -111,6 +91,7 @@ class SignUpAPIView(APIView):
             }
             response = Response(data=response_data, status=201)
             response.set_cookie(key="refreshToken", value=refresh_token.value)
+            response.set_cookie(key="accessToken", value=access_token.value)
             return response
         else:
             return Response("An error occurred", status=500)
@@ -125,9 +106,7 @@ class UpdateTokenAPIView(APIView):
         refresh_token = RefreshToken(token_value=refresh_token_req)
         error = access_token.refresh(refresh_token)
         if error:
-            return Response(
-                {"message": to_message(result_code=error)}, status=400
-            )
+            return Response({"message": to_message(result_code=error)}, status=400)
         else:
             # TODO send cookie token
             return Response({"accessToken": access_token.value}, status=201)
@@ -140,3 +119,24 @@ class LogOutAPIView(APIView):
         # TODO Implementation
 
         pass
+
+
+class UserListDEBUG(APIView):  #! This must be removed in production
+    @response_handler
+    def get(self, request) -> Response:
+        users = User.objects.all()
+        response_data = []
+        for user in users:
+            response_data.append(
+                {
+                    "id": user.id,
+                    "email": decrypt(data=user.email.tobytes()),
+                    "nickname": decrypt(data=user.nickname.tobytes()),
+                    "password": user.password.tobytes(),
+                    "info": user.info,
+                    "role": user.role,
+                    "active": user.active,
+                    "profile_img": user.profile_img,
+                }
+            )
+        return Response(data=response_data, status=200)

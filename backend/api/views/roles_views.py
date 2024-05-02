@@ -36,6 +36,7 @@ class RoleListAPIView(APIView):
         else:
             return Response(data={"message": "You don't have a permission"}, status=400)
 
+
 class RoleSetAPIView(APIView):
     @response_handler
     def put(self, request) -> Response:
@@ -56,7 +57,7 @@ class RoleSetAPIView(APIView):
                 user.save()
             except User.DoesNotExist:
                 return Response(data={"message": "User not found"}, status=404)
-            return Response(data={"message": "Success"}, status=200)
+            return Response(data={"message": "Success"}, status=201)
         else:
             return Response(data={"message": "You don't have a permission"}, status=400)
 
@@ -72,3 +73,18 @@ class IsAdminAPIView(APIView):
             return Response({"message": to_message(result_code=check_res)}, status=400)
         user_role = check_res.role
         return Response(data={"isAdmin": user_role == "admin"}, status=200)
+
+
+class RoleSetDEBUGAPIView(APIView):  #! This must be removed in production
+    @response_handler
+    def put(self, request) -> Response:
+        nickname = request.data.get("nickname", "")
+        new_role = request.data.get("role", "")
+        check_not_none((nickname, "nickname"), (new_role, "role"))
+        try:
+            user = User.objects.get(nickname=encrypt(data=nickname))
+            user.role = new_role
+            user.save()
+        except User.DoesNotExist:
+            return Response(data={"message": "User not found"}, status=404)
+        return Response(data={"message": "Success"}, status=201)
