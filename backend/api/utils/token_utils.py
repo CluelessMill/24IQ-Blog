@@ -137,15 +137,15 @@ class AccessToken(Token):
     @classmethod
     def refresh(self: Self, refresh_token: RefreshToken) -> None | int:
         try:
-            refresh_check = refresh_token.check()
-            if refresh_check.__class__ != int:
-                user = refresh_check
+            check_res = refresh_token.check()
+            if check_res.__class__ != int:
+                user = check_res
                 access_token = AccessToken
                 access_token.create(user=user)
                 self.value = access_token.value
                 return None
             else:
-                return refresh_check
+                return check_res
         except Exception as e:
             return -1
 
