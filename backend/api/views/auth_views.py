@@ -35,7 +35,7 @@ class SignInAPIView(APIView):
                     "email": user.email,
                     "nickname": user.nickname,
                     "avatarPath": profile_img,
-                    "isAdmin": False,
+                    "isAdmin": user.role.lower() == "admin",
                     "isActive": True,
                 },
             }
