@@ -125,3 +125,13 @@ class AuthAPITest(TestCase):
         test_role_set(self=self, nickname=nickname, cookie_value=cookie_value)
         test_role_list(self=self, nickname=nickname, cookie_value=cookie_value)
         test_is_admin(self=self, nickname=nickname, cookie_value=cookie_value)
+
+    def test_posts(self):
+        def test_receive_posts(self):
+            pass
+
+        def test_create_post(self):
+            pass
+
+
+        pass
