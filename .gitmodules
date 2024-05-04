@@ -1,0 +1,6 @@
+[submodule "24IQ_frontend"]
+	path = 24IQ_frontend
+	url = git@github.com:CluelessMill/24IQ_frontend.git
+[submodule "24IQ_backend"]
+	path = 24IQ_backend
+	url = git@github.com:CluelessMill/24IQ_backend.git
